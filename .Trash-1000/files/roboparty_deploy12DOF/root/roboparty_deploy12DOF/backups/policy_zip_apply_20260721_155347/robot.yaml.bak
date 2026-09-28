@@ -1,0 +1,41 @@
+imu:
+    debug_fake_imu: false
+    imu_id: 8
+    imu_interface_type: "serial"
+    imu_interface: "/dev/ttyUSB0"
+    imu_type: "HIPNUC"
+    baudrate: 115200
+
+motors:
+    motor_id:
+        [1, 2, 3, 4, 5, 6,
+         7, 8, 9, 10, 11, 12]
+    motor_interface_type: ["can", "can"]
+    motor_interface: ["can3", "can0"]
+    motor_num: [6, 6]
+    motor_type: ["ENCOS", "ENCOS"]
+    motor_model:
+        [0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0]
+    master_id_offset: 0
+    motor_zero_offset:
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+         0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+robot:
+    type: "rpo"
+    kp: 
+        [100.0, 100.0, 100.0, 150.0, 150.0, 150.0,
+         100.0, 100.0, 100.0, 150.0, 150.0, 150.0]    
+    kd: 
+        [1.65, 1.65, 1.65, 2.5, 1.5, 1.5,
+         1.65, 1.65, 1.65, 2.5, 1.5, 1.5] 
+    motor_sign: 
+        [1, 1, -1, 1, 1, -1,
+          1, 1, -1, 1, -1, 1]
+    close_chain_motor_idx: [5, 6, 11, 12]
+    urdf2motor: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    extrinsic_R: 
+        [1.0, 0.0, 0.0, 
+         0.0, 1.0, 0.0, 
+         0.0, 0.0, 1.0]

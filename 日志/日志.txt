@@ -1,0 +1,129 @@
+
+ubuntu login: sunrise
+Password:
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 6.1.83 aarch64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+扩展安全维护（ESM）Applications 未启用。
+
+354 更新可以立即应用。
+这些更新中有 291 个是标准安全更新。
+要查看这些附加更新，请运行：apt list --upgradable
+
+142 个额外的安全更新可以通过 ESM Apps 来获取安装。
+可通过以下途径了解如何启用 ESM Apps：at https://ubuntu.com/esm
+
+Last login: Mon Sep  7 16:37:34 CST 2026 on ttyS0
+sunrise@ubuntu:~$ cd ~/Desktop/roboparty_deploy
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ source /opt/ros/humble/setup.bash
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ source install/setup.bash
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ colcon build --symlink-install
+Starting >>> roboparty_imu
+Starting >>> roboparty_motors
+Finished <<< roboparty_imu [1.27s]
+Finished <<< roboparty_motors [1.33s]
+Starting >>> roboparty_inference
+Finished <<< roboparty_inference [1.63s]
+
+Summary: 3 packages finished [3.88s]
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ source install/setup.bash
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ ip a | grep can
+5: can4: <NOARP,ECHO> mtu 16 qdisc noop state DOWN group default qlen 1024
+    link/can
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ python3 scripts/motors_py_example.py
+=== CAN电机示例 ===
+[2026-09-09 14:39:20.158] [motors] [error] Unable to detect CAN interface can0
+[2026-09-09 14:39:20.158] [motors] [info] CAN interface can0 closed successfully.
+创建电机失败: Unable to detect CAN interface can0
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ sudo ip link set can0 up type can bitrate 1000000
+Cannot find device "can0"
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ sudo ip link set can0 txqueuelen 1000
+Cannot find device "can0"
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ python3 scripts/motors_py_example.py
+=== CAN电机示例 ===
+[2026-09-09 14:39:40.729] [motors] [error] Unable to detect CAN interface can0
+[2026-09-09 14:39:40.730] [motors] [info] CAN interface can0 closed successfully.
+创建电机失败: Unable to detect CAN interface can0
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ ./tools/start_robot.sh
+选择机器人: rpo
+选择策略: default
+设置 DDS 配置文件: /home/sunrise/Desktop/roboparty_deploy/assets/rt_fastdds_profile.xml
+ros2 未安装
+sunrise@ubuntu:~/Desktop/roboparty_deploy$
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ echo $ROS_DISTRO
+humble
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ # 请根据你的实际安装版本替换 humble/iron/jazzy
+source /opt/ros/humble/setup.bash
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ sudo ip link set can0 up type can bitrate 1000000
+Cannot find device "can0"
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ ^C
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ # 配置并启动 can4
+sudo ip link set can4 down
+sudo ip link set can4 type can bitrate 1000000 txqueuelen 1000
+sudo ip link set can4 up
+
+# 验证状态是否为 UP
+ip -details link show can4
+can: unknown option "txqueuelen"
+Usage: ip link set DEVICE type can
+        [ bitrate BITRATE [ sample-point SAMPLE-POINT] ] |
+        [ tq TQ prop-seg PROP_SEG phase-seg1 PHASE-SEG1
+          phase-seg2 PHASE-SEG2 [ sjw SJW ] ]
+
+        [ dbitrate BITRATE [ dsample-point SAMPLE-POINT] ] |
+        [ dtq TQ dprop-seg PROP_SEG dphase-seg1 PHASE-SEG1
+          dphase-seg2 PHASE-SEG2 [ dsjw SJW ] ]
+
+        [ loopback { on | off } ]
+        [ listen-only { on | off } ]
+        [ triple-sampling { on | off } ]
+        [ one-shot { on | off } ]
+        [ berr-reporting { on | off } ]
+        [ fd { on | off } ]
+        [ fd-non-iso { on | off } ]
+        [ presume-ack { on | off } ]
+        [ cc-len8-dlc { on | off } ]
+
+        [ restart-ms TIME-MS ]
+        [ restart ]
+
+        [ termination { 0..65535 } ]
+
+        Where: BITRATE  := { 1..1000000 }
+                  SAMPLE-POINT  := { 0.000..0.999 }
+                  TQ            := { NUMBER }
+                  PROP-SEG      := { 1..8 }
+                  PHASE-SEG1    := { 1..8 }
+                  PHASE-SEG2    := { 1..8 }
+                  SJW           := { 1..4 }
+                  RESTART-MS    := { 0 | NUMBER }
+[ 2105.768398] tcan4x5x spi5.0 can4: bit-timing not yet defined
+[ 2105.774095] tcan4x5x spi5.0 can4: failed to open can device
+RTNETLINK answers: Invalid argument
+5: can4: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 1024
+    link/can  promiscuity 0 minmtu 0 maxmtu 0
+    can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+          m_can: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
+          m_can: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..32 dbrp-inc 1
+          clock 20000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 parentbus spi parentdev spi5.0
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ ^C
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ sudo ip link set can4 down
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ # 仅设置 CAN 专有参数
+sudo ip link set can4 type can bitrate 1000000
+
+# 单独设置发送队列长度（可选，但推荐）
+sudo ip link set can4 txqueuelen 1000
+sunrise@ubuntu:~/Desktop/roboparty_deploy$ sudo ip link set can4 up
+ip -details link show can4
+5: can4: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+    link/can  promiscuity 0 minmtu 0 maxmtu 0
+    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+          bitrate 1000000 sample-point 0.750
+          tq 50 prop-seg 7 phase-seg1 7 phase-seg2 5 sjw 1
+          m_can: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
+          m_can: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..32 dbrp-inc 1
+          clock 20000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 parentbus spi parentdev spi5.0
+sunrise@ubuntu:~/Desktop/roboparty_deploy$
